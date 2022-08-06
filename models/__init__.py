@@ -1,1 +1,1 @@
-from office import Office
+from .office import Office
