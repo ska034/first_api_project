@@ -1,4 +1,4 @@
-from app import db
+from models.database import db
 
 
 class Office(db.Model):

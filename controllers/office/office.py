@@ -1,7 +1,9 @@
+import sqlalchemy.exc
+import flask
 from flask import Blueprint, jsonify, request
 
 app_route = Blueprint('app_route', __name__)
-from app import db
+from models.database import db
 from models import Office
 
 
@@ -19,11 +21,21 @@ def get_offices():
     return jsonify(output)
 
 
-@app_route.route('/offices', methods=['PUT'])
-def added_offices():
+@app_route.route('/offices', methods=['POST'])
+def add_offices():
     officeData = request.get_json()
+
     new_office = Office(title=officeData['title'], country=officeData['country'], address=officeData['address'])
     db.session.add(new_office)
-    db.session.commit()
 
-    return jsonify(officeData)
+    try:
+        db.session.flush()
+
+    except sqlalchemy.exc.IntegrityError:
+        db.session.rollback()
+        return flask.make_response("Error. An office with this name already exists.", 403)
+
+    finally:
+        db.session.commit()
+
+    return flask.make_response(jsonify(officeData), 200)
