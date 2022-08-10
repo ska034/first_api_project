@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify
+from flask import jsonify
 
-from controllers.office.create_app_route import app_route
+from controllers.create_app_route import app_route
 
 from models import Office
 
@@ -11,6 +11,7 @@ def get_office():
     output = []
     for office in allOffices:
         res = {}
+        res['id'] = office.id
         res['title'] = office.title
         res['country'] = office.country
         res['address'] = office.address
