@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from controllers.office import app_route
+from controllers import app_route
 
 
 from models.database import db
