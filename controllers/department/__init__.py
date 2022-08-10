@@ -1,0 +1,4 @@
+from controllers.department.create_department import app_route
+from controllers.department.get_department import app_route
+from controllers.department.update_department import app_route
+from controllers.department.delete_department import app_route

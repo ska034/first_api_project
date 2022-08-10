@@ -20,7 +20,7 @@ def add_office():
 
     except sqlalchemy.exc.IntegrityError:
         db.session.rollback()
-        return flask.make_response("Error. An office with this name already exists.", 403)
+        return flask.make_response("Error. An office with this title already exists.", 403)
 
     finally:
         db.session.commit()
