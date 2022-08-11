@@ -1,0 +1,4 @@
+from controllers.employee.create_employee import app_route
+from controllers.employee.get_employee import app_route
+from controllers.employee.update_employee import app_route
+from controllers.employee.delete_employee import app_route
