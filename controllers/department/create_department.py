@@ -18,7 +18,8 @@ def add_department():
     try:
         db.session.flush()
 
-    except sqlalchemy.exc.IntegrityError:
+    except sqlalchemy.exc.IntegrityError as massage:
+        print(massage)
         db.session.rollback()
         return flask.make_response("Error. An department with this title already exists.", 403)
 

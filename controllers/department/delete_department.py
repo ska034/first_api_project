@@ -13,7 +13,8 @@ def del_department():
     departmentData = request.get_json()
     try:
         deleteDepartment = Department.query.filter_by(title=departmentData['title']).one()
-    except sqlalchemy.exc.NoResultFound:
+    except sqlalchemy.exc.NoResultFound as massage:
+        print(massage)
         return flask.make_response("There is no department with this title.", 400)
 
     db.session.delete(deleteDepartment)

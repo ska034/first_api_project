@@ -14,7 +14,8 @@ def update_department():
 
     try:
         editedDepartment = Department.query.filter_by(title=departmentData['title']).one()
-    except sqlalchemy.exc.NoResultFound:
+    except sqlalchemy.exc.NoResultFound as massage:
+        print(massage)
         return flask.make_response("Error. There is no department with this title.", 400)
 
     if departmentData['new_title']:
@@ -25,7 +26,8 @@ def update_department():
 
     try:
         db.session.flush()
-    except sqlalchemy.exc.IntegrityError:
+    except sqlalchemy.exc.IntegrityError as massage:
+        print(massage)
         db.session.rollback()
         return flask.make_response("Error. An department with this title already exists.", 403)
 

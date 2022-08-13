@@ -10,4 +10,4 @@ class Office(db.Model):
     departments = db.relationship('Department', backref='office')
 
     def __repr__(self):
-        return f"\nId: {self.id}\nTitle: {self.title}\n Address: {self.address}"
+        return f"\nId: {self.id}\nTitle: {self.title}\nAddress: {self.address}"

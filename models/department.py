@@ -9,4 +9,4 @@ class Department(db.Model):
     employees = db.relationship('Employee', backref='department')
 
     def __repr__(self):
-        return f"\nId: {self.id}\nTitle: {self.title}\n Office_id: {self.office_id}"
+        return f"\nId: {self.id}\nTitle: {self.title}\nOffice_id: {self.office_id}"

@@ -13,6 +13,6 @@ class Employee(db.Model):
     salary = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
-        return f"\nStaff_number: {self.staff_number}\nLast_name: {self.last_name}\n First_name: {self.first_name}" \
-               f"\n Patronymic: {self.patronymic}\nDepartment_id: {self.department_id}\n Role_id: {self.role_id}\n " \
+        return f"\nStaff_number: {self.staff_number}\nLast_name: {self.last_name}\nFirst_name: {self.first_name}" \
+               f"\nPatronymic: {self.patronymic}\nDepartment_id: {self.department_id}\nRole_id: {self.role_id}\n " \
                f"Salary: {self.salary}"
