@@ -13,8 +13,8 @@ def del_employee():
     employeeData = request.get_json()
     try:
         deleteEmployee = Employee.query.filter_by(staff_number=employeeData['staff_number']).one()
-    except sqlalchemy.exc.NoResultFound as massage:
-        print(massage)
+    except sqlalchemy.exc.NoResultFound as message:
+        print(message)
         return flask.make_response("There is no employee with this staff number.", 400)
 
     db.session.delete(deleteEmployee)

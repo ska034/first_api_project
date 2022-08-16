@@ -3,11 +3,19 @@ from flask import jsonify
 from controllers.create_app_route import app_route
 
 from models import Employee
+from sqlalchemy.sql import func
+from models.database import db
+
 
 
 @app_route.route('/employees', methods=['GET'])
 def get_employee():
     allEmployees = Employee.query.all()
+    # res1 = db.session.query(func.sum(Employee.salary)).one()
+    # print (res1[0])
+
+    # print(Employee.query.func.sum(Employee.salary).one())
+
     output = []
     for employee in allEmployees:
         res = {}

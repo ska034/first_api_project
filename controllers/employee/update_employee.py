@@ -14,8 +14,8 @@ def update_employee():
 
     try:
         editedEmployee = Employee.query.filter_by(staff_number=employeeData['staff_number']).one()
-    except sqlalchemy.exc.NoResultFound as massage:
-        print(massage)
+    except sqlalchemy.exc.NoResultFound as message:
+        print(message)
         return flask.make_response("Error. There is no employee with this staff number.", 400)
 
     if employeeData['new_staff_number']:
@@ -30,8 +30,8 @@ def update_employee():
 
     try:
         db.session.flush()
-    except sqlalchemy.exc.IntegrityError as massage:
-        print(massage)
+    except sqlalchemy.exc.IntegrityError as message:
+        print(message)
         db.session.rollback()
         return flask.make_response("Error. An employee with this staff number already exists.", 403)
 

@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 
 from controllers.create_app_route import app_route
 
@@ -8,12 +8,14 @@ from models import Office
 
 
 @app_route.route('/departments', methods=['GET'])
-def get_department():
-    # alldepartment = Department.query.all()
-
-    alldepartment = Department.query.join(Office,Office.id==Department.office_id).all()
-
-    print(alldepartment)
+@app_route.route('/departments/', methods=['GET'])
+def get_departments():
+    country = request.args.get('country')
+    office = request.args.get('office')
+    if country or office:
+        alldepartment = Department.query.join(Office, Office.id == Department.office_id).filter_by(country=country).all()
+    else:
+        alldepartment = Department.query.join(Office, Office.id == Department.office_id).all()
 
     output = []
     for department in alldepartment:

@@ -8,8 +8,8 @@ class Employee(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     patronymic = db.Column(db.String(50), nullable=True)
-    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id', ondelete='SET NULL'), nullable=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='SET NULL'), nullable=True)
     salary = db.Column(db.Float, nullable=True)
 
     def __repr__(self):

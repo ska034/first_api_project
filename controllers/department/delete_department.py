@@ -11,11 +11,14 @@ from models import Department
 @app_route.route('/departments', methods=['DELETE'])
 def del_department():
     departmentData = request.get_json()
+
     try:
-        deleteDepartment = Department.query.filter_by(title=departmentData['title']).one()
-    except sqlalchemy.exc.NoResultFound as massage:
-        print(massage)
-        return flask.make_response("There is no department with this title.", 400)
+        deleteDepartment = Department.query.filter_by(title=departmentData['title']). \
+            filter_by(office_id=departmentData['office_id']).one()
+
+    except sqlalchemy.exc.NoResultFound as message:
+        print(message)
+        return flask.make_response("There is no department with this title in office.", 400)
 
     db.session.delete(deleteDepartment)
     db.session.commit()

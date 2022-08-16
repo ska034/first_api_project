@@ -13,8 +13,8 @@ def del_office():
     officeData = request.get_json()
     try:
         deleteOffice = Office.query.filter_by(title=officeData['title']).one()
-    except sqlalchemy.exc.NoResultFound as massage:
-        print(massage)
+    except sqlalchemy.exc.NoResultFound as message:
+        print(message)
         return flask.make_response("There is no office with this title.", 400)
 
     db.session.delete(deleteOffice)

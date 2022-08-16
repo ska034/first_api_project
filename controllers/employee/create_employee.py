@@ -22,8 +22,8 @@ def add_employee():
 
     try:
         db.session.flush()
-    except sqlalchemy.exc.IntegrityError as massage:
-        print(massage)
+    except sqlalchemy.exc.IntegrityError as message:
+        print(message)
         db.session.rollback()
 
         return flask.make_response("Error. An employee with this staff number already exists.", 403)
