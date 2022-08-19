@@ -14,5 +14,5 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"\nStaff_number: {self.staff_number}\nLast_name: {self.last_name}\nFirst_name: {self.first_name}" \
-               f"\nPatronymic: {self.patronymic}\nDepartment_id: {self.department_id}\nRole_id: {self.role_id}\n " \
+               f"\nPatronymic: {self.patronymic}\nDepartment_id: {self.department_id}\nRole_id: {self.role_id}\n" \
                f"Salary: {self.salary}"

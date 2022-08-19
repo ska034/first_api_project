@@ -1,16 +1,17 @@
-import sqlalchemy.exc
-import flask
-from flask import jsonify, request
-
 from controllers.create_app_route import app_route
-
+from flask import jsonify, request
 from models.database import db
 from models import Employee
+import config          # temporally
+import flask
+import helper
+import sqlalchemy.exc
 
 
 @app_route.route('/employees', methods=['POST'])
 def add_employee():
     employeeData = request.get_json()
+    current_employee = helper.current_user(config.staff_number)  # temporally
 
     if 'patronymic' not in employeeData:
         employeeData['patronymic'] = ''
