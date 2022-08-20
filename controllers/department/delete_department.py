@@ -14,6 +14,9 @@ def del_department():
     current_employee = helper.current_user(config.staff_number)  # temporally
 
     if current_employee['role'] in ['Head','Head of office']:
+        if current_employee['role'] == 'Head of office' and current_employee['office_id'] != departmentData[
+            'office_id']:
+            return flask.make_response("You do not have access to delete a department in another office.", 403)
         try:
             deleteDepartment = Department.query.filter_by(title=departmentData['title']). \
                 filter_by(office_id=departmentData['office_id']).one()
