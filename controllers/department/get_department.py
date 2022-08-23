@@ -1,5 +1,3 @@
-import sqlalchemy.exc
-
 from controllers.create_app_route import app_route
 from flask import jsonify, request
 from models.database import db

@@ -13,3 +13,4 @@ def current_user(staff_number):
     current_employee['department_id'] = info_current_employee.department_id
 
     return current_employee
+

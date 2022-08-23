@@ -3,7 +3,6 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from controllers import app_route
 
-
 from models.database import db
 import config
 

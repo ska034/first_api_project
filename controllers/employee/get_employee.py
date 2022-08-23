@@ -79,7 +79,7 @@ def get_employee(staff_number):
 def employee_dict_formation(employee):
     # Formation of a dictionary of employee parameters
     res = {}
-    res['id'] = employee.id
+    # res['id'] = employee.id
     res['last_name'] = employee.last_name
     res['first_name'] = employee.first_name
     res['patronymic'] = employee.patronymic
