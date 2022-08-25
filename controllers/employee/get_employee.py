@@ -1,26 +1,25 @@
 from controllers.create_app_route import app_route
 from flask import jsonify, request, redirect, url_for
-from models import Department
-from models import Employee
-from models import Office
-from models import Role
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
+from models import Department, Employee, Office, Role
 from models.database import db
 from sqlalchemy.sql import func
-import config  # temprally
 import flask
-import helper
 import sqlalchemy.exc
 
 
 @app_route.route('/employees', methods=['GET'])
 @app_route.route('/employees/', methods=['GET'])
+@jwt_required()
 def get_employees():
+    tokenData = get_jwt_identity()
     office = request.args.get('office')
     department = request.args.get('department')
     salary = request.args.get('salary')
     role = request.args.get('role')
 
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Engineer':
         return redirect(url_for('app_route.get_employee', staff_number=current_employee['staff_number']))
@@ -55,8 +54,10 @@ def get_employees():
 
 
 @app_route.route('/employee/<int:staff_number>')
+@jwt_required()
 def get_employee(staff_number):
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    tokenData = get_jwt_identity()
+    current_employee = current_user(tokenData['staff_number'])
 
     try:
         allemployees = Employee.query.filter_by(staff_number=staff_number).one()

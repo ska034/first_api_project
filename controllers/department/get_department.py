@@ -1,22 +1,22 @@
 from controllers.create_app_route import app_route
 from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
 from models.database import db
-from models import Department
-from models import Office
-from models import Employee
+from models import Department, Employee, Office
 from sqlalchemy.sql import func
 import flask
-import helper
-import config  # temporally
 
 
 @app_route.route('/departments', methods=['GET'])
 @app_route.route('/departments/', methods=['GET'])
+@jwt_required()
 def get_departments():
+    tokenData = get_jwt_identity()
     country = request.args.get('country')
     office_title = request.args.get('office_title')
 
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Engineer':
         return flask.make_response("You do not have access to this information.", 403)
@@ -48,8 +48,10 @@ def get_departments():
 
 #
 @app_route.route('/department/<title>', methods=['GET'])
+@jwt_required()
 def get_department(title):
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    tokenData = get_jwt_identity()
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Engineer':
         return flask.make_response("You do not have access to this information.", 403)

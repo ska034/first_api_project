@@ -11,6 +11,7 @@ class Employee(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='SET NULL'), nullable=True)
     salary = db.Column(db.Float, nullable=True)
     accounts = db.relationship('Account', backref='employee', cascade='all,delete-orphan', passive_deletes=True)
+    tokens = db.relationship('Token', backref='employee', cascade='all,delete-orphan', passive_deletes=True)
 
     def __repr__(self):
         return f"\nStaff_number: {self.staff_number}\nLast_name: {self.last_name}\nFirst_name: {self.first_name}" \

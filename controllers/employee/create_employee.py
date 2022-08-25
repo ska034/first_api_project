@@ -1,18 +1,19 @@
 from controllers.create_app_route import app_route
 from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
 from models.database import db
-from models import Employee
-from models import Department
-import config          # temporally
+from models import Department, Employee
 import flask
-import helper
 import sqlalchemy.exc
 
 
 @app_route.route('/employees', methods=['POST'])
+@jwt_required()
 def add_employee():
+    tokenData = get_jwt_identity()
     employeeData = request.get_json()
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] in ['Head','Head of office']:
         if current_employee['role'] == 'Head of office' and current_employee['office_id'] != employeeData['office_id']:

@@ -1,18 +1,20 @@
 from controllers.create_app_route import app_route
 from flask import request
-from models import Department
-from models import Employee
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
+from models import Department, Employee
 from models.database import db
-import config  # temporally
 import flask
 import sqlalchemy.exc
-import helper
+
 
 
 @app_route.route('/employees', methods=['DELETE'])
+@jwt_required()
 def del_employee():
+    tokenData = get_jwt_identity()
     employeeData = request.get_json()
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] in ['Head', 'Head of office']:
         try:

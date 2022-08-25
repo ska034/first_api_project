@@ -1,16 +1,18 @@
 from controllers.create_app_route import app_route
 from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
 from models.database import db
 from models import Office
-import config
 import flask
-import helper
 import sqlalchemy.exc
 
 @app_route.route('/offices', methods=['POST'])
+@jwt_required()
 def add_office():
+    tokenData = get_jwt_identity()
     officeData = request.get_json()
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Head':
         new_office = Office(title=officeData['title'], country=officeData['country'], address=officeData['address'])

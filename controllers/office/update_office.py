@@ -1,17 +1,19 @@
 from controllers.create_app_route import app_route
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
 from models.database import db
 from models import Office
-import config
 import flask
-import helper
 import sqlalchemy.exc
 
 
 @app_route.route('/offices', methods=['PATCH'])
+@jwt_required()
 def update_office():
+    tokenData = get_jwt_identity()
     officeData = request.get_json()
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Head':
         try:
@@ -20,10 +22,13 @@ def update_office():
             print(message)
             return flask.make_response("Error. There is no office with this title.", 400)
 
-        if officeData['new_title']:
+        if 'new_title' in officeData:
             editedOffice.title = officeData['new_title']
-        editedOffice.country = officeData['country']
-        editedOffice.address = officeData['address']
+        if 'country' in officeData:
+            editedOffice.country = officeData['country']
+        if 'address' in officeData:
+            editedOffice.address = officeData['address']
+
         db.session.add(editedOffice)
 
         try:

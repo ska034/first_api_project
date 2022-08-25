@@ -1,18 +1,19 @@
 from controllers.create_app_route import app_route
 from flask import request
-from models import Department
-from models import Employee
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from helper import current_user
+from models import Department, Employee
 from models.database import db
-import config       # temporally
 import sqlalchemy.exc
 import flask
-import helper
 
 
 @app_route.route('/employees', methods=['PATCH'])
+@jwt_required()
 def update_employee():
+    tokenData = get_jwt_identity()
     employeeData = request.get_json()
-    current_employee = helper.current_user(config.staff_number)  # temporally
+    current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] in ['Head', 'Head of office']:
         if current_employee['role'] == 'Head of office' and current_employee['office_id'] != employeeData['office_id']:
@@ -32,14 +33,20 @@ def update_employee():
             print(message)
             return flask.make_response("There is no such department in this office.", 400)
 
-        if 'new_staff_number' in employeeData.keys() and employeeData['new_staff_number']:
+        if 'new_staff_number' in employeeData and employeeData['new_staff_number']:
             editedEmployee.staff_number = employeeData['new_staff_number']
-        editedEmployee.last_name = employeeData['last_name']
-        editedEmployee.first_name = employeeData['first_name']
-        editedEmployee.patronymic = employeeData['patronymic']
-        editedEmployee.department_id = employeeData['department_id']
-        editedEmployee.role_id = employeeData['role_id']
-        editedEmployee.salary = employeeData['salary']
+        if 'last_name' in employeeData:
+            editedEmployee.last_name = employeeData['last_name']
+        if 'first_name' in employeeData:
+            editedEmployee.first_name = employeeData['first_name']
+        if 'patronymic' in employeeData:
+            editedEmployee.patronymic = employeeData['patronymic']
+        if 'department_id' in employeeData:
+            editedEmployee.department_id = employeeData['department_id']
+        if 'role_id' in employeeData:
+            editedEmployee.role_id = employeeData['role_id']
+        if 'salary' in employeeData:
+            editedEmployee.salary = employeeData['salary']
         db.session.add(editedEmployee)
 
         try:
