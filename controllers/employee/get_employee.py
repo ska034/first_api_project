@@ -34,7 +34,7 @@ def get_employees():
             .filter((func.lower(Role.position) == role.lower()) if role else True) \
             .all()
         if allEmployees == []:
-            return flask.make_response("There is no employee with the given parameters.", 400)
+            return jsonify({"msg":"Not found employee"}), 400
 
     output = []
     for employee in allEmployees:
@@ -50,7 +50,7 @@ def get_employees():
     if output:
         return jsonify(output)
     else:
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
 
 
 @app_route.route('/employee/<int:staff_number>')
@@ -63,7 +63,7 @@ def get_employee(staff_number):
         allemployees = Employee.query.filter_by(staff_number=staff_number).one()
     except sqlalchemy.exc.NoResultFound as message:
         print(message)
-        return flask.make_response("There is no employee with the given parameters.", 400)
+        return jsonify({"msg":"Not found employee"}), 400
 
     if current_employee['role'] == 'Head':
         return employee_dict_formation(allemployees)
@@ -74,13 +74,13 @@ def get_employee(staff_number):
     elif current_employee['role'] == 'Engineer' and current_employee['staff_number'] == allemployees.staff_number:
         return employee_dict_formation(allemployees)
     else:
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
 
 
 def employee_dict_formation(employee):
     # Formation of a dictionary of employee parameters
     res = {}
-    # res['id'] = employee.id
+    res['staff_number'] = employee.staff_number
     res['last_name'] = employee.last_name
     res['first_name'] = employee.first_name
     res['patronymic'] = employee.patronymic

@@ -1,5 +1,5 @@
 from controllers.create_app_route import app_route
-from flask import request
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from helper import current_user
 from models.database import db
@@ -20,11 +20,11 @@ def del_office():
             deleteOffice = Office.query.filter_by(title=officeData['title']).one()
         except sqlalchemy.exc.NoResultFound as message:
             print(message)
-            return flask.make_response("There is no office with this title.", 400)
+            return jsonify({"msg":"Not found office"}), 400
 
         db.session.delete(deleteOffice)
         db.session.commit()
 
-        return flask.make_response("Good deletion", 200)
+        return jsonify({"msg":"Deleted successfully"}), 200
     else:
-        return flask.make_response("You do not have access to these actions.", 403)
+        return jsonify({"msg":"No access"}), 403

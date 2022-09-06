@@ -4,7 +4,6 @@ from models.database import db
 from controllers.create_app_route import app_route
 from flask import request, jsonify
 from models import Account, Token
-from app import jwt
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt
 import bcrypt
 

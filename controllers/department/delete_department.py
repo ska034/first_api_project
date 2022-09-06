@@ -1,5 +1,5 @@
 from controllers.create_app_route import app_route
-from flask import request
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from helper import current_user
 from models import Department
@@ -18,19 +18,19 @@ def del_department():
     if current_employee['role'] in ['Head','Head of office']:
         if current_employee['role'] == 'Head of office' and current_employee['office_id'] != departmentData[
             'office_id']:
-            return flask.make_response("You do not have access to delete a department in another office.", 403)
+            return jsonify({"msg":"No access"}), 403
         try:
             deleteDepartment = Department.query.filter_by(title=departmentData['title']). \
                 filter_by(office_id=departmentData['office_id']).one()
             if current_employee['role'] == 'Head of office' and current_employee['office_id'] != deleteDepartment.office_id:
-                return flask.make_response("You do not have access to these actions.", 403)
+                return jsonify({"msg":"No access"}), 403
         except sqlalchemy.exc.NoResultFound as message:
             print(message)
-            return flask.make_response("There is no department with this title in office.", 400)
+            return jsonify({"msg":"Not found department"}), 400
 
         db.session.delete(deleteDepartment)
         db.session.commit()
 
-        return flask.make_response("Good deletion", 200)
+        return jsonify({"msg":"Deleted successfully"}), 200
     else:
-        return flask.make_response("You do not have access to these actions.", 403)
+        return jsonify({"msg":"No access"}), 403

@@ -19,14 +19,14 @@ def get_departments():
     current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Engineer':
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
     else:
         alldepartments = Department.query.join(Office) \
             .filter((func.lower(Office.country) == country.lower()) if country else True) \
             .filter((func.lower(Office.title) == office_title.lower()) if office_title else True) \
             .all()
         if alldepartments == []:
-            return flask.make_response("There are no departments in this country or this office", 400)
+            return jsonify({"msg":"Not found department"}), 400
 
         output = []
         for department in alldepartments:
@@ -43,7 +43,7 @@ def get_departments():
         if output:
             return jsonify(output)
         else:
-            return flask.make_response("You do not have access to this information.", 403)
+            return jsonify({"msg":"No access"}), 403
 
 
 #
@@ -54,12 +54,12 @@ def get_department(title):
     current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] == 'Engineer':
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
     else:
         alldepartments = Department.query.filter(func.lower(Department.title) == title.lower()).all()
 
         if alldepartments == 0:
-            return flask.make_response("There is no department with this title.", 400)
+            return jsonify({"msg":"Not found department"}), 400
         elif len(alldepartments) == 1:
             if current_employee['office_id'] == alldepartments[0].office_id \
                     or current_employee['department_id'] == alldepartments[0].id:
@@ -67,7 +67,7 @@ def get_department(title):
             elif current_employee['role'] == 'Head':
                 return department_dict_formation(alldepartments[0])
             else:
-                return flask.make_response("You do not have access to this information.", 403)
+                return jsonify({"msg":"No access"}), 403
         else:
             output = []
             for department in alldepartments:
@@ -84,7 +84,7 @@ def get_department(title):
             if output:
                 return jsonify(output)
             else:
-                return flask.make_response("You do not have access to this information.", 403)
+                return jsonify({"msg":"No access"}), 403
 
 
 def department_dict_formation(department):

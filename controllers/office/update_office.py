@@ -1,5 +1,5 @@
 from controllers.create_app_route import app_route
-from flask import request
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from helper import current_user
 from models.database import db
@@ -20,7 +20,7 @@ def update_office():
             editedOffice = Office.query.filter_by(title=officeData['title']).one()
         except sqlalchemy.exc.NoResultFound as message:
             print(message)
-            return flask.make_response("Error. There is no office with this title.", 400)
+            return jsonify({"msg":"Not found office"}), 400
 
         if 'new_title' in officeData:
             editedOffice.title = officeData['new_title']
@@ -36,10 +36,9 @@ def update_office():
         except sqlalchemy.exc.IntegrityError as message:
             print(message)
             db.session.rollback()
-            return flask.make_response("Error. An office with this title already exists.", 403)
+            return jsonify({"msg":"Already exists"}), 403
 
         db.session.commit()
-        return flask.make_response(f"Office '{officeData['title']}' changed to:\n\n Title: {editedOffice.title}"
-                                   f"\nCountry: {editedOffice.country}\nAddress: {editedOffice.address}", 200)
+        return jsonify({"msg": "Changed successfully"}), 200
     else:
-        return flask.make_response("You do not have access to these actions.", 403)
+        return jsonify({"msg":"No access"}), 403

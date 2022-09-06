@@ -24,11 +24,11 @@ def add_office():
         except sqlalchemy.exc.IntegrityError as message:
             print(message)
             db.session.rollback()
-            return flask.make_response("Error. An office with this title already exists.", 403)
+            return jsonify({"msg":"Already exists"}), 403
 
         finally:
             db.session.commit()
 
-        return flask.make_response(jsonify(officeData), 200)
+        return jsonify({"msg":"Created successfully"}), 200
     else:
-        return flask.make_response("You do not have access to these actions.", 403)
+        return jsonify({"msg":"No access"}), 403

@@ -1,8 +1,7 @@
 from controllers.create_app_route import app_route
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import jsonify, request
-from models import Department
-from models import Employee, Office
+from models import Department, Employee, Office
 from models.database import db
 from sqlalchemy.sql import func
 import flask
@@ -21,12 +20,12 @@ def get_offices():
     current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] in ['Engineer', 'Head of department']:
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
     else:
         allOffices = Office.query. \
             filter((func.lower(Office.country) == country.lower()) if country else True).all()
         if allOffices == []:
-            return flask.make_response("There are no offices in this country", 400)
+            return jsonify({"msg":"Not found office"}), 400
 
         output = []
         for office in allOffices:
@@ -38,7 +37,7 @@ def get_offices():
         if output:
             return jsonify(output)
         else:
-            return flask.make_response("You do not have access to this information.", 403)
+            return jsonify({"msg":"No access"}), 403
 
 
 @app_route.route('/office/<title>', methods=['GET'])
@@ -48,18 +47,18 @@ def get_office(title):
     current_employee = current_user(tokenData['staff_number'])
 
     if current_employee['role'] in ['Engineer', 'Head of department']:
-        return flask.make_response("You do not have access to this information.", 403)
+        return jsonify({"msg":"No access"}), 403
     else:
         try:
             office = Office.query.filter(func.lower(Office.title) == title.lower()).one()
         except sqlalchemy.exc.NoResultFound as message:
             print(message)
-            return flask.make_response("There is no office with this title", 400)
+            return jsonify({"msg":"Not found office"}), 400
 
         if office.id == current_employee['office_id']:
             return office_dict_formation(office)
         else:
-            return flask.make_response("You do not have access to this information.", 403)
+            return jsonify({"msg":"No access"}), 403
 
 
 def office_dict_formation(office):

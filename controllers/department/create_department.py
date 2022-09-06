@@ -17,11 +17,11 @@ def add_department():
 
     if current_employee['role'] in ['Head','Head of office']:
         if current_employee['role'] == 'Head of office' and current_employee['office_id'] != departmentData['office_id']:
-            return flask.make_response("You do not have access to create a department in another office.", 403)
+            return jsonify({"msg":"No access"}), 403
         alldepartment = Department.query.all()
         for department in alldepartment:
             if departmentData['title'] == department.title and departmentData['office_id'] == department.office_id:
-                return flask.make_response("Error. An department with this title already exists in this office.", 403)
+                return jsonify({"msg":"Already exists"}), 403
 
         new_department = Department(title=departmentData['title'], office_id=departmentData['office_id'])
         db.session.add(new_department)
@@ -32,11 +32,11 @@ def add_department():
         except sqlalchemy.exc.IntegrityError as message:
             print(message)
             db.session.rollback()
-            return flask.make_response("Error. An department with this title already exists in this office.", 403)
+            return jsonify({"msg":"Already exists"}), 403
 
         finally:
             db.session.commit()
 
-        return flask.make_response(jsonify(departmentData), 200)
+        return jsonify({"msg":"Created successfully"}), 200
     else:
-        return flask.make_response("You do not have access to these actions.", 403)
+        return jsonify({"msg":"No access"}), 403
