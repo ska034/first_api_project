@@ -13,6 +13,7 @@ client  = app.test_client()
 app.config['SQLALCHEMY_DATABASE_URI'] = config.db_connection_string
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = config.jwt_secret_key
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 
 
 
