@@ -5,14 +5,14 @@ from flask_sqlalchemy import SQLAlchemy
 from controllers import app_route
 from controllers.create_jwt_manager import jwt
 from models.database import db
-import config
+from config import db_connection_string, jwt_secret_key
 
 app = Flask(__name__)
 client  = app.test_client()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = config.db_connection_string
+app.config['SQLALCHEMY_DATABASE_URI'] = db_connection_string
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = config.jwt_secret_key
+app.config['JWT_SECRET_KEY'] = jwt_secret_key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 
 

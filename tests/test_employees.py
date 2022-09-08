@@ -1,10 +1,8 @@
 from unittest import TestCase, main
 from app import app
-from models import Employee
-from config import headers
+from models import Employee, Department
+from tests.config_test import headers, URL
 import requests
-
-URL = "http://127.0.0.1:5000"
 
 
 class TestEmployeeNotToken(TestCase):
@@ -26,7 +24,7 @@ class TestEmployeeIsTokenHead(TestCase):
             employee_from_db = Employee.query.filter(Employee.staff_number == '1001').first().last_name
         self.assertEqual(employee_from_response, employee_from_db)
 
-    def test_03_post_employee_json_response(self):
+    def test_03_create_employee_json_response(self):
         response = requests.post(URL + "/employees", headers=headers,
                                  json={
                                      "staff_number": 1534,
@@ -39,7 +37,20 @@ class TestEmployeeIsTokenHead(TestCase):
                                  })
         self.assertEqual(response.json().get('msg'), 'Created successfully')
 
-    def test_04_patch_employee_json_response(self):
+    def test_04_create_employee_value_from_db(self):
+        with app.app_context():
+            data_from_db = Employee.query.filter(Employee.staff_number == 1534).one()
+        employee_from_db = dict(staff_number=data_from_db.staff_number,
+                              last_name=data_from_db.last_name,
+                              first_name=data_from_db.first_name,
+                              department_id=data_from_db.department_id,
+                              role_id=data_from_db.role_id,
+                              salary=data_from_db.salary)
+        employee_from_requests = {"staff_number": 1534, "last_name": "Morozov", "first_name": "Den", "department_id": 5,
+                                "role_id": 3, "salary": 3056}
+        self.assertEqual(employee_from_requests, employee_from_db)
+
+    def test_05_update_employee_json_response(self):
         response = requests.patch(URL + "/employees", headers=headers,
                                   json={
                                       "staff_number": 1534,
@@ -52,11 +63,29 @@ class TestEmployeeIsTokenHead(TestCase):
                                   })
         self.assertEqual(response.json().get('msg'), 'Changed successfully')
 
-    def test_05_delete_employee_json_response(self):
+    def test_06_update_employee_value_from_db(self):
+        with app.app_context():
+            data_from_db = Employee.query.filter(Employee.staff_number == 1534).one()
+        employee_from_db = dict(staff_number=data_from_db.staff_number,
+                              last_name=data_from_db.last_name,
+                              first_name=data_from_db.first_name,
+                              department_id=data_from_db.department_id,
+                              role_id=data_from_db.role_id,
+                              salary=data_from_db.salary)
+        employee_from_requests = {"staff_number": 1534, "last_name": "Morozov", "first_name": "Den", "department_id": 5,
+                                "role_id": 3, "salary": 2985}
+        self.assertEqual(employee_from_requests, employee_from_db)
+
+    def test_07_delete_employee_json_response(self):
         response = requests.delete(URL + "/employees", headers=headers, json={"staff_number": 1534})
         self.assertEqual(response.json().get('msg'), 'Deleted successfully')
 
-    def test_06_delete_non_existing_employee_status_code(self):
+    def test_08_delete_employee_value_from_db(self):
+        with app.app_context():
+            data_from_db = Employee.query.filter(Employee.staff_number == 1534).all()
+        self.assertEqual(data_from_db, [])
+
+    def test_09_delete_non_existing_employee_status_code(self):
         response = requests.delete(URL + "/employees", headers=headers, json={"staff_number": 9999})
         self.assertEqual(response.status_code, 400)
 
